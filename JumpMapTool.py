@@ -22,7 +22,7 @@ class ToolGT(QgsMapToolEmitPoint):
         self.canvasClicked.connect(self.clicked)
         
     def activate(self):
-        '''เรียกการใช้เคอร์เซอร์เม้ส์'''
+        '''เรียกการใช้เคอร์เซอร์เม้าส์'''
         self.canvas.setCursor(Qt.CrossCursor)
         
     def clicked(self, pt):
@@ -51,9 +51,9 @@ class WidgetSetting:
         '''ฟังก์ชั่นนี้จะโหลดการตั้งค่าที่ได้ทำไว้แล้วตลอดถึงแม้จะปิดโปรแกรมไปแล้ว'''
         settings = QSettings()
         ### EXTERNAL MAP ###
-        self.showPlacemark = int(settings.value('/WarpMapTool/ShowPlacemark', Qt.Checked))
-        self.reference = int(settings.value('/WarpMapTool/reference', 0))
-        self.mapZoom = int(settings.value('/WarpMapTool/MapZoom', 13))
+        self.showPlacemark = int(settings.value('/JumpMap/ShowPlacemark', Qt.Checked))
+        self.reference = int(settings.value('/JumpMap/reference', 0))
+        self.mapZoom = int(settings.value('/JumpMap/MapZoom', 13))
        
     def GetReferenceMap(self, lat, lon):
         '''ฟังก์ชั่นนี้จะรับค่าจากแผนที่ในรูปแบบข้อมูล Lat, Lon'''
@@ -67,12 +67,12 @@ class WidgetSetting:
         return ms
 
 
-class WarpMapTool:
+class JumpMapTool:
     '''เป็นคลาสสำหรับหน้าต่างอินเตอร์เฟซ'''
     def __init__(self, iface):
         self.iface = iface
         self.canvas = iface.mapCanvas()        
-        self.toolbar = self.iface.addToolBar('Warp Map Toolbar')
+        self.toolbar = self.iface.addToolBar('Jump Map Toolbar')
 
     def initGui(self):
         '''เริ่มต้นการทำงานGui'''
@@ -82,14 +82,19 @@ class WarpMapTool:
         
         # เพิ่มปุ่มที่Toolbar
         icon = QIcon(os.path.dirname(__file__) + "/images/mapicon.png")
-        self.externMapAction = QAction(icon, "Warp Map", self.iface.mainWindow())
+        self.externMapAction = QAction(icon, "Jump Map", self.iface.mainWindow())
         self.externMapAction.triggered.connect(self.SetCheckMap)
         self.toolbar.addAction(self.externMapAction)
-       # self.iface.addPluginToMenu("Warp Map Tools", self.externMapAction)
+       # self.iface.addPluginToMenu("Jump Map Tools", self.externMapAction)
 
     def unload(self):
         '''ยกเลิกการโหลดคลาสนี้จากโปรแกรม'''
-        pass
+        self.canvas.unsetMapTool(self.showMapTool)
+        self.iface.removeToolBarIcon(self.externMapAction)
+        # remove the toolbar
+        del self.toolbar
+        
+
 
     def SetCheckMap(self):
         '''ฟังก์ชั่นนี้เซ็ทและตรวจสอบค่าในแผนที่'''

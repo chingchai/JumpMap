@@ -1,3 +1,3 @@
 def classFactory(iface):
-    from .WarpMapTool import WarpMapTool
-    return WarpMapTool(iface)
+    from .JumpMapTool import JumpMapTool
+    return JumpMapTool(iface)
